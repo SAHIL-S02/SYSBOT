@@ -12,7 +12,10 @@ ALLOWED_ACTIONS = {
     "move_mouse",
     "ensure_folder",
     "open_vscode",
-    "save_file"
+    "save_file",
+    "set_game_mode",
+    "open_predator_sense",
+    "close_app"
 }
 
 
@@ -124,7 +127,13 @@ def main():
         if cmd.lower() in {"exit", "quit"}:
             break
 
-        plan = ask_llm(cmd, USER_PROFILE)
+        try:
+            plan = ask_llm(cmd, USER_PROFILE)
+        except Exception as e:
+            print("[ERROR] LLM unavailable:", e)
+            print("SYSBOT is running in limited mode.")
+            continue
+
         print("\nPLAN:", json.dumps(plan, indent=2))
 
         actions = plan.get("actions", [])
